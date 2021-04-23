@@ -1,8 +1,19 @@
 import React from "react";
 import axios from "axios";
-import { Button, TextField } from "@material-ui/core";
+import {
+    Button,
+    CircularProgress,
+    makeStyles,
+    TextField
+} from "@material-ui/core";
 import { UserResult } from "./UserResult";
 
+
+const useStyles = makeStyles({
+    root: {
+        margin: '16px',
+    },
+});
 
 interface IStatus {
     emoji: string;
@@ -43,20 +54,24 @@ export const Search: React.FC = () => {
         userCount: 0,
         users: []
     });
+    const [ loading, setLoading ] = React.useState<boolean>(false);
+
+    const classes = useStyles();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
     };
 
     const handleSubmit = (e: any) => {
-
+        
+        setLoading(true);
         e.preventDefault();
         axios
             .post(
                 "https://api.github.com/graphql",
                 {
                     query: `query($searchQuery:String!) {
-                        search(query: $searchQuery, type: USER, first: 10) {
+                        search(query: $searchQuery, type: USER, first: 100) {
                             userCount
                             edges {
                               node {
@@ -101,17 +116,18 @@ export const Search: React.FC = () => {
                     userCount: response.data.data.search.userCount,
                     users: response.data.data.search.edges
                 });
+                // Clear the input field after submission and update state
+                e.target[0].value = '';
+                setQuery('');
+                setLoading(false);
             });
-        // Clear the input field after submission and update state
-        e.target[0].value = '';
-        setQuery('');
-
     };
 
     return (
-        <div>
-            <form noValidate onSubmit={handleSubmit}>
+        <>
+            <form className={classes.root} noValidate onSubmit={handleSubmit}>
                 <TextField
+                className={classes.root}
                  id="search"
                  name="search"
                  label="Search GitHub Users"
@@ -119,6 +135,7 @@ export const Search: React.FC = () => {
                  onChange={handleChange}
                 />
                 <Button
+                className={classes.root}
                  variant="contained"
                  type="submit"
                  size="large"
@@ -126,12 +143,20 @@ export const Search: React.FC = () => {
                 >
                     Search
                 </Button>
+                {loading && (
+                    <CircularProgress
+                     variant="indeterminate"
+                     color="primary"
+                     thickness={5}
+                    />
+                )}
             </form>
+            
             {results.users && results.userCount !== 0 && (
                 <UserResult
                  users={results.users}
                 />
             )}
-        </div>
+        </>
     );
 }

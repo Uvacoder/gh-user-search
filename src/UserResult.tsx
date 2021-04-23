@@ -9,14 +9,15 @@ import { makeStyles } from '@material-ui/core';
 const useStyles = makeStyles({
     root: {
         minHeight: '80px',
-        padding: '16px'
+        padding: '16px',
+        margin: '16px',
     },
     avatars: {
         width: '80px',
         height: '80px',
         float: 'left',
-        marginRight: '14px'
-    }
+        marginRight: '14px',
+    },
 });
 
 interface IUserResultProps {
