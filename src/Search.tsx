@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { Button, TextField } from "@material-ui/core";
+import { UserResult } from "./UserResult";
 
 
 interface IStatus {
@@ -8,7 +9,7 @@ interface IStatus {
     message: string;
 }
 
-interface IUser {
+export interface IUser {
     node: {
         avatarUrl: string;
         bio: string | null;
@@ -50,8 +51,6 @@ export const Search: React.FC = () => {
     const handleSubmit = (e: any) => {
 
         e.preventDefault();
-        // Clear the input field after submission
-        e.target[0].value = '';
         axios
             .post(
                 "https://api.github.com/graphql",
@@ -102,9 +101,11 @@ export const Search: React.FC = () => {
                     userCount: response.data.data.search.userCount,
                     users: response.data.data.search.edges
                 });
-                console.log("response received!", response.data.data.search);
-            })
-            .then(() => console.log("results", results, results.users));
+            });
+        // Clear the input field after submission and update state
+        e.target[0].value = '';
+        setQuery('');
+
     };
 
     return (
@@ -126,11 +127,11 @@ export const Search: React.FC = () => {
                     Search
                 </Button>
             </form>
-            {results.users && results.userCount !== 0 && results.users.map((user: IUser, index: number) => (
-                <div key={index}>
-                    {user.node.name}
-                </div>
-            ))}
+            {results.users && results.userCount !== 0 && (
+                <UserResult
+                 users={results.users}
+                />
+            )}
         </div>
     );
 }
