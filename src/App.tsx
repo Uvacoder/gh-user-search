@@ -1,10 +1,10 @@
 import React from 'react';
-import './App.css';
+import { Search } from './Search';
 
 function App(): JSX.Element {
 	return (
 		<div>
-			An Element
+			<Search />
 		</div>
 	);
 }
