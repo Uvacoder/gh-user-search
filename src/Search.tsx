@@ -4,56 +4,30 @@ import {
     Button,
     CircularProgress,
     makeStyles,
-    TextField
+    TextField,
+    Typography
 } from "@material-ui/core";
 import { UserResult } from "./UserResult";
+import { Pagination } from "./Pagination";
+import { useResultsContext } from "./ResultsContext";
 
 
 const useStyles = makeStyles({
     root: {
-        margin: '16px',
+        marginTop: '16px',
+        marginBottom: '16px',
     },
-});
-
-interface IStatus {
-    emoji: string;
-    message: string;
-}
-
-export interface IUser {
-    node: {
-        avatarUrl: string;
-        bio: string | null;
-        email: string;
-        followers: {
-            totalCount: number;
-        };
-        following: {
-            totalCount: number;
-        };
-        id: string;
-        isHireable: boolean;
-        location: string | null;
-        login: string;
-        name: string | null;
-        status: IStatus | null;
-        url: string;
-        websiteUrl: string | null;
+    button: {
+        marginTop: '16px',
+        marginBottom: '16px',
+        marginLeft: '16px'
     }
-}
-
-interface IQueryResult {
-    userCount: number;
-    users: IUser[];
-}
+});
 
 export const Search: React.FC = () => {
 
     const [ query, setQuery ] = React.useState<string>('');
-    const [ results, setResults ] = React.useState<IQueryResult>({
-        userCount: 0,
-        users: []
-    });
+    const { results, setResults } = useResultsContext()!;
     const [ loading, setLoading ] = React.useState<boolean>(false);
 
     const classes = useStyles();
@@ -71,7 +45,7 @@ export const Search: React.FC = () => {
                 "https://api.github.com/graphql",
                 {
                     query: `query($searchQuery:String!) {
-                        search(query: $searchQuery, type: USER, first: 100) {
+                        search(query: $searchQuery, type: USER, first: 10) {
                             userCount
                             edges {
                               node {
@@ -99,6 +73,12 @@ export const Search: React.FC = () => {
                                 }
                               }
                             }
+                            pageInfo {
+                                hasNextPage
+                                hasPreviousPage
+                                endCursor
+                                startCursor
+                            }
                         }
                     }`,
                     variables: {
@@ -114,7 +94,8 @@ export const Search: React.FC = () => {
             .then(response => {
                 setResults({
                     userCount: response.data.data.search.userCount,
-                    users: response.data.data.search.edges
+                    users: response.data.data.search.edges,
+                    pageInfo: response.data.data.search.pageInfo
                 });
                 // Clear the input field after submission and update state
                 e.target[0].value = '';
@@ -125,9 +106,14 @@ export const Search: React.FC = () => {
 
     return (
         <>
-            <form className={classes.root} noValidate onSubmit={handleSubmit}>
+            <form
+             className={classes.root}
+             onSubmit={handleSubmit}
+             style={{ display: 'flex'}}
+            >
                 <TextField
-                className={classes.root}
+                 className={classes.root}
+                 fullWidth
                  id="search"
                  name="search"
                  label="Search GitHub Users"
@@ -135,7 +121,7 @@ export const Search: React.FC = () => {
                  onChange={handleChange}
                 />
                 <Button
-                className={classes.root}
+                 className={classes.button}
                  variant="contained"
                  type="submit"
                  size="large"
@@ -153,10 +139,23 @@ export const Search: React.FC = () => {
             </form>
             
             {results.users && results.userCount !== 0 && (
-                <UserResult
-                 users={results.users}
-                />
+                <>
+                    <Typography
+                     variant="h4"
+                    >
+                        Results: {results.userCount}
+                    </Typography>
+                    <UserResult
+                     users={results.users}
+                    />
+                    {results.pageInfo && (
+                        <Pagination
+                         query={query}
+                         pageInfo={results.pageInfo}
+                        />
+                    )}
+                </>
             )}
         </>
     );
-}
+};
