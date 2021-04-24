@@ -18,6 +18,7 @@ This site was built and hosted using:
 - Axios
 - Create React App
 - Emoji Mart
+- universal-cookie
 - GitHub GraphQL API
 - Heroku
 
