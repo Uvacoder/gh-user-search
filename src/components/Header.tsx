@@ -40,6 +40,11 @@ export const Header: React.FC = () => {
             >
                 GitHub User Search
             </Typography>
+            <Typography
+            display="block"
+            >
+                Search more than 70M users
+            </Typography>
         </header>
     );
 };

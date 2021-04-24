@@ -13,10 +13,8 @@ import {
 } from '@material-ui/core';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { Emoji } from 'emoji-mart';
 import Grow from '@material-ui/core/Grow';
-import IconButton from '@material-ui/core/IconButton';
 
 
 const useStyles = makeStyles({
@@ -49,10 +47,6 @@ const useStyles = makeStyles({
         paddingLeft: '4px',
     },
 });
-
-interface IExpandedComponent {
-    [key: string]: boolean;
-};
 
 export const UserResults: React.FC = () => {
 
