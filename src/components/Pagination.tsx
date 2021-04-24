@@ -159,21 +159,25 @@ export const Pagination: React.FC<IPaginationProps> = ({
     return (
         <>
             {results.userCount !== 0 && results.pageInfo?.hasPreviousPage && (
-                <IconButton aria-label="back/previous">
+                <IconButton
+                 aria-label="back/previous"
+                 onClick={handleBackClick}
+                >
                     <ChevronLeftIcon
                      fontSize='large'
-                     onClick={handleBackClick}
                     />
                 </IconButton>
             )}
             {results.userCount !== 0 && results.pageInfo?.hasNextPage && (
-                <IconButton aria-label="forward/next">
+                <IconButton
+                 aria-label="forward/next"
+                 onClick={handleForwardClick}
+                >
                     <ChevronRightIcon
                      fontSize='large'
-                     onClick={handleForwardClick}
                     />
                 </IconButton>
             )}
         </>
     );
-}
+};
