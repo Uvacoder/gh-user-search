@@ -162,6 +162,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
                 <IconButton
                  aria-label="back/previous"
                  onClick={handleBackClick}
+                 style={{ float: 'left'}}
                 >
                     <ChevronLeftIcon
                      fontSize='large'
@@ -170,6 +171,7 @@ export const Pagination: React.FC<IPaginationProps> = ({
             )}
             {results.userCount !== 0 && results.pageInfo?.hasNextPage && (
                 <IconButton
+                style={{float: 'right'}}
                  aria-label="forward/next"
                  onClick={handleForwardClick}
                 >

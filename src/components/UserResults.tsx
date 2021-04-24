@@ -10,14 +10,19 @@ import {
     Collapse,
     Link,
     makeStyles,
+    useMediaQuery,
+    useTheme,
+    Theme,
+    Box
 } from '@material-ui/core';
 import StarOutlineIcon from '@material-ui/icons/StarOutline';
 import PeopleOutlineIcon from '@material-ui/icons/PeopleOutline';
 import { Emoji } from 'emoji-mart';
 import Grow from '@material-ui/core/Grow';
+import { numberFormatter } from '../utils/utils';
 
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme: Theme) => ({
     root: {
         minHeight: '142px',
         padding: '16px',
@@ -25,18 +30,22 @@ const useStyles = makeStyles({
         marginBottom: '16px',
     },
     avatar: {
+        [theme.breakpoints.down('sm')]: {
+            width: '68px',
+            height: '68px'
+        },
         width: '110px',
         height: '110px',
         float: 'left',
         marginRight: '14px',
         verticalAlign: 'middle',
-        boxShadow: '-2px 2px 12px 0px rgba(0, 0, 0, .5)'
+        boxShadow: '-2px 2px 12px 0px rgba(0, 0, 0, .4)'
     },
-    text: {
-        marginTop: 0,
-        marginBottom: 0,
-        paddingTop: 0,
-        paddingBottom: 6,
+    username: {
+        [theme.breakpoints.down('sm')]: {
+            lineHeight: '1.2'
+        },
+        paddingTop: '6px',
         lineHeight: 1.6,
         verticalAlign: 'baseline',
     },
@@ -45,19 +54,40 @@ const useStyles = makeStyles({
         height: '20px',
     },
     inlineText: {
-        paddingLeft: '4px',
+        [theme.breakpoints.down('sm')]: {
+            paddingTop: '-6px',
+            lineHeight: '1',
+            paddingLeft: 0,
+            paddingRight: '4px',
+        },
+        paddingRight: '6px',
     },
-});
+    bio: {
+        marginTop: '6px'
+    },
+    status: {
+        minHeight: '34px',
+        paddingTop: '4px',
+        paddingBottom: '4px'
+    }
+}));
 
 export const UserResults: React.FC = () => {
 
     const { results } = useResultsContext()!;
+
     const classes = useStyles();
+    const theme = useTheme();
+    const smScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
         <div>
             {results && results.users.map((user: IUser) => (
-                <Grow in={true} timeout={400} key={user.node.id}>
+                <Grow
+                 in={true}
+                 timeout={400}
+                 key={user.node.id}
+                >
                     <Paper
                      className={classes.root}
                      elevation={3}
@@ -69,41 +99,51 @@ export const UserResults: React.FC = () => {
                         />
                         {user.node.name && (
                             <Typography
-                             variant="h5"
+                             variant={smScreen ? 'h6' : 'h5'}
+                             variantMapping={smScreen ? {h6: 'h5'} : undefined}
                              display="inline"
+                             style={{ lineHeight: 1 }}
                             >
                                 {user.node.name}
                             </Typography>
                         )}
-                        {user.node.status && user.node.status.emoji && (
-                            <span className={classes.inlineText}>
-                                <Emoji emoji={user.node.status.emoji} size={24} />
-                                <Typography
-                                 className={classes.inlineText}
-                                 variant="caption"
-                                 display="inline"
-                                >
-                                    {user.node.status.message}
-                                </Typography>
-                            </span>
-                        )}
                         <div>
                             <Link
-                             className={classes.text}
-                             display="inline"
+                             className={classes.username}
+                             display={smScreen ? "block" : "inline"}
                              color="secondary"
                              variant="button"
                              href={user.node.url}
                             >
                                 {user.node.login}
                             </Link>
+                            <Box
+                             className={classes.status}
+                            >
+                            {user.node.status && user.node.status.emoji && (
+                                <>
+                                    <Emoji
+                                     emoji={user.node.status.emoji}
+                                     size={smScreen ? 16 : 20}
+                                    /> 
+                                    <Typography
+                                     className={classes.inlineText}
+                                     variant={smScreen ? "body2" : "body1"}
+                                     display="inline"
+                                    >
+                                        {user.node.status.message}
+                                    </Typography>
+                                </>
+                            )}
+                            </Box>
                             <Typography
+                             style={{marginLeft: '-4px'}}
                              className={classes.inlineText}
-                             variant="body1"
+                             variant={smScreen ? 'body2' : 'body1'}
                              display="inline"
                             >
                                 <StarOutlineIcon className={classes.icon} />
-                                {user.node.starredRepositories.totalCount}
+                                {numberFormatter(user.node.starredRepositories.totalCount)}
                             </Typography>
                             <Typography
                              className={classes.inlineText}
@@ -114,11 +154,11 @@ export const UserResults: React.FC = () => {
                             </Typography>
                             <Typography
                              className={classes.inlineText}
-                             variant="body1"
+                             variant={smScreen ? 'body2' : 'body1'}
                              display="inline"
                             >
                                 <PeopleOutlineIcon className={classes.icon} />
-                                {user.node.followers.totalCount} followers
+                                {numberFormatter(user.node.followers.totalCount)} followers
                             </Typography>
                             <Typography
                              className={classes.inlineText}
@@ -129,15 +169,16 @@ export const UserResults: React.FC = () => {
                             </Typography>
                             <Typography
                              className={classes.inlineText}
-                             variant="body1"
+                             variant={smScreen ? 'body2' : 'body1'}
                              display="inline"
                             >
-                                {user.node.following.totalCount} following
+                                {numberFormatter(user.node.following.totalCount)} following
                             </Typography>
                         </div>
                         {user.node.bio && (
                             <Typography
-                             variant="body1"
+                             className={classes.bio}
+                             variant={smScreen ? 'body2' : 'body1'}
                             >
                                 {user.node.bio}
                             </Typography>

@@ -2,8 +2,6 @@ import { createMuiTheme } from "@material-ui/core";
 
 
 export const lightTheme = createMuiTheme({
-	overrides: {
-	},
 	palette: {
 		type: 'light',
 		primary: {
@@ -47,8 +45,6 @@ export const lightTheme = createMuiTheme({
 });
 
 export const darkTheme = createMuiTheme({
-	overrides: {
-	},
 	palette: {
 		type: 'dark',
 		primary: {
@@ -87,6 +83,9 @@ export const darkTheme = createMuiTheme({
 		},
         MuiOutlinedInput: {
             notched: false
+        },
+        MuiGrid: {
+            zeroMinWidth: true
         }
 	}
 });

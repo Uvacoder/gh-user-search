@@ -23,8 +23,8 @@ const useStyles = makeStyles({
         alignItems: 'center',
     },
     loading: {
-        marginTop: '6px',
-        marginBottom: '6px',
+        marginTop: '3px',
+        marginBottom: '3px',
         height: '6px',
     },
     input: {
