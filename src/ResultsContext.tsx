@@ -6,8 +6,8 @@ type Props = {
 };
 
 interface IStatus {
-    emoji: string;
-    message: string;
+    emoji: string | null;
+    message: string | null;
 };
 
 export interface IUser {
@@ -26,6 +26,9 @@ export interface IUser {
         location: string | null;
         login: string;
         name: string | null;
+        starredRepositories: {
+            totalCount: number;
+        };
         status: IStatus | null;
         url: string;
         websiteUrl: string | null;

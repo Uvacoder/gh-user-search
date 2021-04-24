@@ -7,7 +7,7 @@ import {
     TextField,
     Typography
 } from "@material-ui/core";
-import { UserResult } from "./UserResult";
+import { UserResults } from "./UserResults";
 import { Pagination } from "./Pagination";
 import { useResultsContext } from "./ResultsContext";
 
@@ -27,8 +27,8 @@ const useStyles = makeStyles({
 export const Search: React.FC = () => {
 
     const [ query, setQuery ] = React.useState<string>('');
-    const { results, setResults } = useResultsContext()!;
     const [ loading, setLoading ] = React.useState<boolean>(false);
+    const { results, setResults } = useResultsContext()!;
 
     const classes = useStyles();
 
@@ -48,30 +48,33 @@ export const Search: React.FC = () => {
                         search(query: $searchQuery, type: USER, first: 10) {
                             userCount
                             edges {
-                              node {
-                                ... on User {
-                                  email
-                                  avatarUrl
-                                  bio
-                                  followers {
-                                    totalCount
-                                  }
-                                  following {
-                                    totalCount
-                                  }
-                                  websiteUrl
-                                  url
-                                  status {
-                                    emoji
-                                    message
-                                  }
-                                  name
-                                  login
-                                  location
-                                  isHireable
-                                  id
+                                node {
+                                    ... on User {
+                                        email
+                                        avatarUrl
+                                        bio
+                                        followers {
+                                            totalCount
+                                        }
+                                        following {
+                                            totalCount
+                                        }
+                                        websiteUrl
+                                        url
+                                        status {
+                                            emoji
+                                            message
+                                        }
+                                        name
+                                        login
+                                        location
+                                        isHireable
+                                        id
+                                        starredRepositories {
+                                            totalCount
+                                        }
+                                    }
                                 }
-                              }
                             }
                             pageInfo {
                                 hasNextPage
@@ -138,20 +141,17 @@ export const Search: React.FC = () => {
                 )}
             </form>
             
-            {results.users && results.userCount !== 0 && (
+            {results && results.userCount !== 0 && (
                 <>
                     <Typography
                      variant="h4"
                     >
                         Results: {results.userCount}
                     </Typography>
-                    <UserResult
-                     users={results.users}
-                    />
+                    <UserResults />
                     {results.pageInfo && (
                         <Pagination
                          query={query}
-                         pageInfo={results.pageInfo}
                         />
                     )}
                 </>

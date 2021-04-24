@@ -1,28 +1,27 @@
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { IPageInfo, useResultsContext } from './ResultsContext';
+import { useResultsContext } from './ResultsContext';
 import axios from 'axios';
+import { IconButton } from '@material-ui/core';
 
 
 interface IPaginationProps {
     query: string;
-    pageInfo: IPageInfo;
 };
 
 export const Pagination: React.FC<IPaginationProps> = ({
     query,
-    pageInfo
 }: IPaginationProps) => {
 
-    const { setResults } = useResultsContext()!;
+    const { results, setResults } = useResultsContext()!;
 
-    const handleBackClick = () => {
+    const handleForwardClick = () => {
         axios
             .post(
                 "https://api.github.com/graphql",
                 {
-                    query: `query($searchQuery:String!) {
+                    query: `query($searchQuery:String!, $endCursor:String!) {
                         search(
                             query: $searchQuery,
                             type: USER,
@@ -31,30 +30,33 @@ export const Pagination: React.FC<IPaginationProps> = ({
                         ) {
                             userCount
                             edges {
-                              node {
-                                ... on User {
-                                  email
-                                  avatarUrl
-                                  bio
-                                  followers {
-                                    totalCount
-                                  }
-                                  following {
-                                    totalCount
-                                  }
-                                  websiteUrl
-                                  url
-                                  status {
-                                    emoji
-                                    message
-                                  }
-                                  name
-                                  login
-                                  location
-                                  isHireable
-                                  id
+                                node {
+                                    ... on User {
+                                        email
+                                        avatarUrl
+                                        bio
+                                        followers {
+                                            totalCount
+                                        }
+                                        following {
+                                            totalCount
+                                        }
+                                        websiteUrl
+                                        url
+                                        status {
+                                            emoji
+                                            message
+                                        }
+                                        name
+                                        login
+                                        location
+                                        isHireable
+                                        id
+                                        starredRepositories {
+                                            totalCount
+                                        }
+                                    }
                                 }
-                              }
                             }
                             pageInfo {
                                 hasNextPage
@@ -65,7 +67,8 @@ export const Pagination: React.FC<IPaginationProps> = ({
                         }
                     }`,
                     variables: {
-                        searchQuery: `${query}`
+                        searchQuery: `${query}`,
+                        endCursor: `${results.pageInfo?.endCursor}`
                     }
                 },
                 {
@@ -83,21 +86,93 @@ export const Pagination: React.FC<IPaginationProps> = ({
             });
     };
 
-    const handleForwardClick = () => {
-
+    const handleBackClick = () => {
+        axios
+            .post(
+                "https://api.github.com/graphql",
+                {
+                    query: `query($searchQuery:String!, $startCursor:String!) {
+                        search(
+                            query: $searchQuery,
+                            type: USER,
+                            last: 10,
+                            before: $startCursor
+                        ) {
+                            userCount
+                            edges {
+                                node {
+                                    ... on User {
+                                        email
+                                        avatarUrl
+                                        bio
+                                        followers {
+                                            totalCount
+                                        }
+                                        following {
+                                            totalCount
+                                        }
+                                        websiteUrl
+                                        url
+                                        status {
+                                            emoji
+                                            message
+                                        }
+                                        name
+                                        login
+                                        location
+                                        isHireable
+                                        id
+                                        starredRepositories {
+                                            totalCount
+                                        }
+                                    }
+                                }
+                            }
+                            pageInfo {
+                                hasNextPage
+                                hasPreviousPage
+                                endCursor
+                                startCursor
+                            }
+                        }
+                    }`,
+                    variables: {
+                        searchQuery: `${query}`,
+                        startCursor: `${results.pageInfo?.startCursor}`
+                    }
+                },
+                {
+                    headers: {
+                        Authorization: `bearer ${process.env.REACT_APP_GITHUB_BEARER_TOKEN}`
+                    }
+                }
+            )
+            .then(response => {
+                setResults({
+                    userCount: response.data.data.search.userCount,
+                    users: response.data.data.search.edges,
+                    pageInfo: response.data.data.search.pageInfo
+                });
+            });
     };
 
     return (
         <>
-            {pageInfo.hasPreviousPage && (
-                <ChevronLeftIcon
-                 onClick={handleBackClick}
-                />
+            {results.userCount !== 0 && results.pageInfo?.hasPreviousPage && (
+                <IconButton aria-label="back/previous">
+                    <ChevronLeftIcon
+                     fontSize='large'
+                     onClick={handleBackClick}
+                    />
+                </IconButton>
             )}
-            {pageInfo.hasNextPage && (
-                <ChevronRightIcon
-                 onClick={handleForwardClick}
-                />
+            {results.userCount !== 0 && results.pageInfo?.hasNextPage && (
+                <IconButton aria-label="forward/next">
+                    <ChevronRightIcon
+                     fontSize='large'
+                     onClick={handleForwardClick}
+                    />
+                </IconButton>
             )}
         </>
     );
