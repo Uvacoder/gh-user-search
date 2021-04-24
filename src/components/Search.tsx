@@ -1,26 +1,47 @@
 import React from "react";
 import axios from "axios";
 import {
+    Box,
     Button,
-    CircularProgress,
+    LinearProgress,
     makeStyles,
     TextField,
     Typography
 } from "@material-ui/core";
 import { UserResults } from "./UserResults";
 import { Pagination } from "./Pagination";
-import { useResultsContext } from "./ResultsContext";
+import { useResultsContext } from "../context/ResultsContext";
 
 
 const useStyles = makeStyles({
-    root: {
-        marginTop: '16px',
-        marginBottom: '16px',
+    form: {
+        height: '50px',
+        display: 'flex',
+        padding: 0,
+        alignItems: 'center',
+    },
+    loading: {
+        marginTop: '6px',
+        marginBottom: '6px',
+        height: '6px',
+    },
+    input: {
+        height: '44px',
+        boxSizing: 'border-box',
     },
     button: {
-        marginTop: '16px',
-        marginBottom: '16px',
-        marginLeft: '16px'
+        height: '40px',
+        boxSizing: 'border-box',
+        marginLeft: '14px',
+        background: 'linear-gradient(to right, #5ce1e6, #ffeb32, #ff66c4)',
+        backgroundSize: '200%',
+        backgroundPosition: '0 0',
+        boxShadow: '6px -2px 10px 0px rgba(82,82,82,0.6) inset',
+        transition: 'background .3s linear',
+        '&:hover': {
+            backgroundPosition: '100% 0',
+            boxShadow: '6px -2px 10px 0px rgba(82,82,82,0.6) inset',
+        },
     }
 });
 
@@ -110,18 +131,18 @@ export const Search: React.FC = () => {
     return (
         <>
             <form
-             className={classes.root}
+             className={classes.form}
              onSubmit={handleSubmit}
-             style={{ display: 'flex'}}
             >
                 <TextField
-                 className={classes.root}
+                 className={classes.input}
                  fullWidth
                  id="search"
                  name="search"
-                 label="Search GitHub Users"
+                 placeholder="Search GitHub Users"
                  variant="outlined"
                  onChange={handleChange}
+                 margin="dense"
                 />
                 <Button
                  className={classes.button}
@@ -132,19 +153,22 @@ export const Search: React.FC = () => {
                 >
                     Search
                 </Button>
-                {loading && (
-                    <CircularProgress
-                     variant="indeterminate"
-                     color="primary"
-                     thickness={5}
-                    />
-                )}
             </form>
-            
-            {results && results.userCount !== 0 && (
+            <Box
+             className={classes.loading}
+            >
+            {loading && (
+                <LinearProgress
+                 aria-busy={loading}
+                 variant="indeterminate"
+                 color="secondary"
+                />
+            )}
+            </Box>
+            {!loading && results && (
                 <>
                     <Typography
-                     variant="h4"
+                     variant="h6"
                     >
                         Results: {results.userCount}
                     </Typography>

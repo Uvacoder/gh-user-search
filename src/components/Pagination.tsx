@@ -1,7 +1,7 @@
 import React from 'react';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import { useResultsContext } from './ResultsContext';
+import { useResultsContext } from '../context/ResultsContext';
 import axios from 'axios';
 import { IconButton } from '@material-ui/core';
 
