@@ -3,6 +3,7 @@ import axios from "axios";
 import {
     Box,
     Button,
+    InputAdornment,
     LinearProgress,
     makeStyles,
     TextField,
@@ -11,6 +12,7 @@ import {
 import { UserResults } from "./UserResults";
 import { Pagination } from "./Pagination";
 import { useResultsContext } from "../context/ResultsContext";
+import SearchIcon from '@material-ui/icons/Search';
 
 
 const useStyles = makeStyles({
@@ -137,12 +139,19 @@ export const Search: React.FC = () => {
                 <TextField
                  className={classes.input}
                  fullWidth
-                 id="search"
+                 id="user-search"
                  name="search"
                  placeholder="Search GitHub Users"
                  variant="outlined"
                  onChange={handleChange}
                  margin="dense"
+                 InputProps={{
+                     startAdornment: (
+                         <InputAdornment position="start">
+                             <SearchIcon />
+                         </InputAdornment>
+                     )
+                 }}
                 />
                 <Button
                  className={classes.button}

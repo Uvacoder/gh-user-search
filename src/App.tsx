@@ -70,7 +70,9 @@ function App(): JSX.Element {
 						 checked={darkMode}
 						 className={classes.switch}
 						 onChange={handleChange}
-						 inputProps={{ 'aria-label': 'toggle theme' }}
+						 inputProps={{
+							 'aria-label': 'toggle theme'
+						 }}
 						 color="primary"
 						/>
 					</Tooltip>

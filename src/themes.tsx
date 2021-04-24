@@ -22,7 +22,7 @@ export const lightTheme = createMuiTheme({
 		},
 		background: {
 			default: '#fff',
-            paper: '#eee'
+            paper: '#FBFBFB'
 		}
 	},
 	shape: {

@@ -29,7 +29,8 @@ const useStyles = makeStyles({
         height: '110px',
         float: 'left',
         marginRight: '14px',
-        verticalAlign: 'middle'
+        verticalAlign: 'middle',
+        boxShadow: '-2px 2px 12px 0px rgba(0, 0, 0, .5)'
     },
     text: {
         marginTop: 0,
@@ -56,11 +57,10 @@ export const UserResults: React.FC = () => {
     return (
         <div>
             {results && results.users.map((user: IUser) => (
-                <Grow in={true} timeout={400}>
+                <Grow in={true} timeout={400} key={user.node.id}>
                     <Paper
                      className={classes.root}
                      elevation={3}
-                     key={user.node.id}
                     >
                         <Avatar
                          className={classes.avatar}
