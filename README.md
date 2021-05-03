@@ -22,6 +22,15 @@ This site was built and hosted using:
 - GitHub GraphQL API
 - Heroku
 
+## Features
+
+- Paginated results using GraphQL
+- Emoji translation and display using Emoji Mart
+- Light/Dark mode theme toggle using Material-UI and cookies
+- Search button animation using CSS transitions
+- Page results animation using Material-UI
+- Built utility to format large follower/following counts
+
 ## Project Specifications
 
 The goal of this exercise is to create an app that implements a portion of GitHub's Search feature, the user search, using their public API. Please share a working deployed version of the exercise as well as the GitHub repo.
